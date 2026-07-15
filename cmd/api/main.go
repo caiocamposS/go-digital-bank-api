@@ -2,9 +2,11 @@ package main
 
 import (
 	"digital-bank-api/internal/config"
+	"digital-bank-api/internal/handlers"
 	"digital-bank-api/internal/models"
+	"digital-bank-api/internal/repository"
+	"digital-bank-api/internal/service"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -33,13 +35,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(*userRepo)
+	userHandler := handlers.NewUserHandler(*userService)
+
 	router := gin.Default()
-	
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+
+	router.POST("/cadastro", userHandler.Signup)
 
 	router.Run(":8080")
 }
