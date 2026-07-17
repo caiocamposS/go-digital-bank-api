@@ -42,6 +42,7 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/cadastro", userHandler.Signup)
+	router.POST("/login", userHandler.Login)
 
 	router.Run(":8080")
 }

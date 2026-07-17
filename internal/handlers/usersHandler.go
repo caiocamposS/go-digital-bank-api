@@ -43,3 +43,28 @@ func (h *UserHandler) Signup(c *gin.Context) {
 	c.JSON(http.StatusCreated, userResponse)
 
 }
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var req request.LoginRequest
+
+	if c.Bind(&req) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+
+		return
+	}
+
+	resp, err := h.userService.Login(req)
+
+	if err != nil {
+		c. JSON(http.StatusUnauthorized, gin.H{
+			"error": "Failed to login",
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+
+}

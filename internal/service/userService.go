@@ -46,3 +46,29 @@ func (s *UserService) CreateUser(req request.UserRequest) (*response.UserRespons
 
 	return &userResponse, nil
 }
+
+func (s *UserService) Login(req request.LoginRequest) (*response.LoginResponse, error) {
+	user, err := s.userRepository.Login(req) // get user
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = auth.CompareHash(user.Password, req.Password) // verify if pass equals to hash
+
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := auth.GenerateToken(*user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	loginResponse := response.LoginResponse{
+		Token: token,
+	}
+
+	return &loginResponse, nil
+}
