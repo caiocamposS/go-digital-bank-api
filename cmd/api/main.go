@@ -30,6 +30,8 @@ func main() {
 
 	err = db.AutoMigrate(
 		&models.User{},
+		&models.Account{},
+		&models.Transaction{},
 	)
 
 	if err != nil {
@@ -40,6 +42,10 @@ func main() {
 	userService := service.NewUserService(*userRepo)
 	userHandler := handlers.NewUserHandler(*userService)
 
+	accountRepo := repository.NewAccountRepository(db)
+	accountService := service.NewAccountService(*accountRepo)
+	accountHandler := handlers.NewAccountHandler(*accountService)
+
 	router := gin.Default()
 
 	router.POST("/cadastro", userHandler.Signup)
@@ -49,6 +55,8 @@ func main() {
 	protected.Use(middleware.AuthMiddleware())
 
 	protected.GET("/profile", userHandler.GetProfile)
+
+	protected.POST("/account", accountHandler.CreateAccount)
 
 	router.Run(":8080")
 }
