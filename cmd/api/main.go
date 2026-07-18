@@ -3,6 +3,7 @@ package main
 import (
 	"digital-bank-api/internal/config"
 	"digital-bank-api/internal/handlers"
+	"digital-bank-api/internal/middleware"
 	"digital-bank-api/internal/models"
 	"digital-bank-api/internal/repository"
 	"digital-bank-api/internal/service"
@@ -43,6 +44,11 @@ func main() {
 
 	router.POST("/cadastro", userHandler.Signup)
 	router.POST("/login", userHandler.Login)
+
+	protected := router.Group("/users")
+	protected.Use(middleware.AuthMiddleware())
+
+	protected.GET("/profile", userHandler.GetProfile)
 
 	router.Run(":8080")
 }

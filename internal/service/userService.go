@@ -72,3 +72,19 @@ func (s *UserService) Login(req request.LoginRequest) (*response.LoginResponse, 
 
 	return &loginResponse, nil
 }
+
+func (s *UserService) GetProfile(userID uint) (*response.UserResponse, error) {
+	user, err := s.userRepository.FindById(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp := response.UserResponse{
+		ID: user.ID,
+		Name: user.Name,
+		Email: user.Email,
+	}
+
+	return &resp, nil
+}

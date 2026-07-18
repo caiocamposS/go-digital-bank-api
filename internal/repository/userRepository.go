@@ -26,3 +26,9 @@ func (r *UserRepository) Login(req request.LoginRequest) (*models.User, error) {
 
 	return &user, r.db.First(&user, "email = ?", req.Email).Error
 }
+
+func (r *UserRepository) FindById(id uint) (*models.User, error) {
+	var user models.User
+	
+	return &user, r.db.First(&user, "id = ?", id).Error
+}
